@@ -1,0 +1,1 @@
+web: personality-insights-demo

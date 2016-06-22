@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>PrivateEye</title>
+   <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.14/d3.min.js"></script>
+    <script src="static/js/personality-sunburst-chart.standalone.min.js"></script>
+    <script src="static/js/bootstrap.min.js"></script>
+    <script>
+function getProfile(username, source) {
+  $("#errorMsg").hide();
+  $("#loading").show();
+  $("#profile").hide();
+  $.getJSON('/profile/'+ username +'/'+ source, '', function ( profile ) {
+    $("#loading").hide();
+    $("#profile").show();
+    var chart = new PersonalitySunburstChart('sunburstChart');
+    chart.show(profile, './static/img/profile_photo.jpg');
+  })
+    .fail(function ( jqxhr, textStatus, error ) {
+      $("#errorMsg > span").html("<b>Error!</b> " + jqxhr.responseJSON.error);
+      $("#errorMsg").show();
+      $("#loading").hide();
+    });
+}
+ $(function() {
+   $("#reddit").click(function(e) {
+     var username = $("#username").val();
+
+     getProfile(username, "reddit");
+
+     e.preventDefault();
+   })
+   $("#stackoverflow").click(function(e) {
+     var username = $("#username").val();
+
+     getProfile(username, "stackoverflow");
+     e.preventDefault();
+   })
+ })
+    </script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<style>
+#loading {
+  display: none
+}
+#profile {
+  display: none
+}
+.vertical-center {
+  min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
+  min-height: 100vh; /* These two lines are counted as one :-)       */
+
+  display: flex;
+  align-items: center;
+}
+#errorMsg {
+  display: none;
+}
+</style>
+
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <div id="errorMsg" class="alert alert-danger">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <span><strong>Danger!</strong> Indicates a dangerous or potentially negative action.</span>
+      </div>
+      <div class="input-group col-xs-3">
+        <input type="text" class="form-control" id="username" placeholder="Username" aria-describedby="sizing-addon2">
+        <div class="input-group-btn">
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+           Choose source 
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a href="#" id="reddit">Reddit</a></li>
+            <li><a href="#" id="stackoverflow">StackOverflow</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="vertical-center">
+        <div id="loading" class="center-block">
+          <img src="static/img/loading-indicator.gif" class="img-responsive"/>
+        </div>
+        <div id="profile" class="center-block col-lg-7"><div id="sunburstChart"></div></div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+declared-services:
+  personality-insight-svc:
+    label: personality_insights
+    plan: tiered
+applications:
+- name: personality-insights-demo
+  path: .
+  buildpack: go_buildpack
+  services:
+    - personality-insight-svc
